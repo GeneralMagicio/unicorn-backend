@@ -1,0 +1,55 @@
+# Rename this to docker-compose.yml after migration
+# We are introducing new env variables that must be present in .env
+# DEPLOYMENT_NAME=unicorn-backend (this var is being used as Service Name, Container Name and Network Name)
+# IMAGE_NAME=ghcr.io/generalmagicio/unicorn-be
+# APPLICATION_PORT=3000
+
+services:
+  ${DEPLOYMENT_NAME}1:
+    image: ${IMAGE_NAME}
+    container_name: ${DEPLOYMENT_NAME}1
+    restart: always
+    ports:
+      - "${APPLICATION_PORT}:${APPLICATION_PORT}"
+    env_file:
+      - .env
+    networks:
+      - ${DEPLOYMENT_NAME}
+
+  ${DEPLOYMENT_NAME}2:
+    image: ${IMAGE_NAME}
+    container_name: ${DEPLOYMENT_NAME}2
+    restart: always
+    ports:
+      - "${APPLICATION_PORT}:${APPLICATION_PORT}"
+    env_file:
+      - .env
+    networks:
+      - ${DEPLOYMENT_NAME}
+
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    networks:
+      - unicorn-backend
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - .env
+    environment:
+      - BACKEND_URL=${BACKEND_URL:-}
+      - IP_WHITELIST=${IP_WHITELIST:-0.0.0.0/0}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+
+volumes:
+  caddy_config:
+  caddy_data:
+
+networks:
+  ${DEPLOYMENT_NAME}:
