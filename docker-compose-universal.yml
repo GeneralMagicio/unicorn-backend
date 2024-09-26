@@ -1,6 +1,6 @@
 # Rename this to docker-compose.yml after migration
 # We are introducing new env variables that must be present in .env
-# DEPLOYMENT_NAME=unicorn-backend
+# DEPLOYMENT_NAME=unicorn-backend (this var is being used as Service Name, Container Name and Network Name)
 # IMAGE_NAME=ghcr.io/generalmagicio/unicorn-be
 # APPLICATION_PORT=3000
 
